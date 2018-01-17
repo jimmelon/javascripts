@@ -8,6 +8,8 @@ console.log([new Date().getSeconds(),"ETH=".concat(mi[4].innerHTML.substring(1))
 Number.parseFloat(mi[5].innerHTML.substring(1)).toPrecision(4),
 Number.parseFloat((mi[4].innerHTML.substring(1)/mi[0].innerHTML.substring(1) - mi[5].innerHTML.substring(1))*10000).toPrecision(4)]);
 };
+
+
 var refreshIntervalId = setInterval(e2b.bind(null, mi), 1000);
 //No Indicated ETH/BTC
 var mi=$$(".ProductSelectionItem_price_sn2Ut");
