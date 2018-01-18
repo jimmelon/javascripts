@@ -26,9 +26,16 @@ e2b
 var refreshIntervalId = setInterval(e2b.bind(null, ds), 1000);
 var refreshIntervalId = setInterval(e2blong.bind(null, ds), 1000);
 
+/**
+price remind
+*/
+
+var remindmeId1 = setInterval(checkPriceLess.bind(null, ds,951), 1000);
 
 
 /**
 stop the timmer of running scripts
 */
 clearInterval(refreshIntervalId);
+
+clearInterval(remindmeId1 );

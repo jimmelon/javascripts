@@ -1,20 +1,75 @@
-var mi=$$(".ProductSelectionItem_price_sn2Ut");
+var ds=$$(".ProductSelectionItem_price_sn2Ut");
+var lableContainner = $(".MarketInfo_market-info_3lkUj");
 
-var e2blong=function(mi) {
-	console.log([new Date().getSeconds(),"ETH=".concat(mi[4].innerHTML.substring(1)),
-	"BTC=".concat(mi[0].innerHTML.substring(1)),
-	"ratio=".concat(Number.parseFloat(mi[4].innerHTML.substring(1)/mi[0].innerHTML.substring(1)).toPrecision(4)),
-	Number.parseFloat(mi[5].innerHTML.substring(1)).toPrecision(4),
-	Number.parseFloat((mi[4].innerHTML.substring(1)/mi[0].innerHTML.substring(1) - mi[5].innerHTML.substring(1))*10000).toPrecision(4)]);
+
+var getPrice=function(ds){
+	
+	var Coin={
+	BTC:{
+		price:{ USD:ds[0].innerHTML.substring(1),
+				BTC:1
+				}
+	},
+	BCH:{
+		price:{USD:ds[3].innerHTML.substring(1),
+				BTC:ds[4].innerHTML.substring(1),
+				BTCRATIO: ds[3].innerHTML.substring(1)/ds[0].innerHTML.substring(1),
+				pressure: (ds[3].innerHTML.substring(1)/ds[0].innerHTML.substring(1)-ds[4].innerHTML.substring(1))*10000
+		}
+	},
+	ETH:{
+		price:{	USD:ds[5].innerHTML.substring(1),
+				BTC:ds[6].innerHTML.substring(1),
+				BTCRATIO: ds[5].innerHTML.substring(1)/ds[0].innerHTML.substring(1),
+				pressure: (ds[5].innerHTML.substring(1)/ds[0].innerHTML.substring(1)-ds[6].innerHTML.substring(1))*10000
+		}
+	},
+	LTC:{
+		price:{	USD:ds[8].innerHTML.substring(1),
+				BTC:ds[9].innerHTML.substring(1),
+				BTCRATIO: ds[8].innerHTML.substring(1)/ds[0].innerHTML.substring(1),
+				pressure: (ds[8].innerHTML.substring(1)/ds[0].innerHTML.substring(1)-ds[9].innerHTML.substring(1))*10000
+		}
+	},
+	EOS:{}
+}
+	return Coin;
+}
+
+var threeRatio=function(){
+	var price = getPrice(ds);
+	return [price.BCH.price.BTCRATIO, price.ETH.price.BTCRATIO,price.LTC.price.BTCRATIO];
+}
+
+var threePressure=function(){
+	var price = getPrice(ds);
+	return [price.BCH.price.pressure, price.ETH.price.pressure,price.LTC.price.pressure];
+}
+
+var b2blong=function(ds) {
+	console.log([new Date().getSeconds(),"ETH=".concat(ds[3].innerHTML.substring(1)),
+	"BTC=".concat(ds[0].innerHTML.substring(1)),
+	"ratio=".concat(Number.parseFloat(ds[3].innerHTML.substring(1)/ds[0].innerHTML.substring(1)).toPrecision(4)),
+	Number.parseFloat(ds[4].innerHTML.substring(1)).toPrecision(4),
+	Number.parseFloat((ds[3].innerHTML.substring(1)/ds[0].innerHTML.substring(1) - ds[4].innerHTML.substring(1))*10000).toPrecision(4)]);
 };
 
 
-var e2b=function(mi) {
-	console.log([new Date().getSeconds(),mi[4].innerHTML.substring(1),
-	mi[0].innerHTML.substring(1),
-	Number.parseFloat(mi[4].innerHTML.substring(1)/mi[0].innerHTML.substring(1)).toPrecision(4),
-	Number.parseFloat(mi[5].innerHTML.substring(1)).toPrecision(4),
-	Number.parseFloat((mi[4].innerHTML.substring(1)/mi[0].innerHTML.substring(1) - mi[5].innerHTML.substring(1))*10000).toPrecision(4)]);
+var e2blong=function(ds) {
+	console.log([new Date().getSeconds(),"ETH=".concat(ds[5].innerHTML.substring(1)),
+	"BTC=".concat(ds[0].innerHTML.substring(1)),
+	"ratio=".concat(Number.parseFloat(ds[5].innerHTML.substring(1)/ds[0].innerHTML.substring(1)).toPrecision(4)),
+	Number.parseFloat(ds[6].innerHTML.substring(1)).toPrecision(4),
+	Number.parseFloat((ds[5].innerHTML.substring(1)/ds[0].innerHTML.substring(1) - ds[6].innerHTML.substring(1))*10000).toPrecision(4)]);
+};
+
+
+var e2b=function(ds) {
+	console.log([new Date().getSeconds(),ds[5].innerHTML.substring(1),
+	ds[0].innerHTML.substring(1),
+	Number.parseFloat(ds[5].innerHTML.substring(1)/ds[0].innerHTML.substring(1)).toPrecision(4),
+	Number.parseFloat(ds[6].innerHTML.substring(1)).toPrecision(4),
+	Number.parseFloat((ds[5].innerHTML.substring(1)/ds[0].innerHTML.substring(1) - ds[6].innerHTML.substring(1))*10000).toPrecision(4)]);
 };
 
 function createLabel(label, description)
@@ -44,18 +99,18 @@ function createLabel(label, description)
 	return li;
 }
 
-var htmlupdate=function(mi, description) {
+var htmlupdate=function(ds, description) {
 	var ele = document.getElementById(description+"_id");
-	ele.innerHTML =Number.parseFloat((mi[4].innerHTML.substring(1)/mi[0].innerHTML.substring(1) - mi[5].innerHTML.substring(1))*10000).toPrecision(4);
+	ele.innerHTML =Number.parseFloat((ds[5].innerHTML.substring(1)/ds[0].innerHTML.substring(1) - ds[6].innerHTML.substring(1))*10000).toPrecision(4);
 };
 
 
-//Price reminder
-var checkPriceLess=function(mi,target) {
-	if (Number.parseFloat(mi[4].innerHTML.substring(1))<=target) {console.log("bear ".concat(target))}
+//Price redsnder
+var checkPriceLess=function(ds,target) {
+	if (Number.parseFloat(ds[5].innerHTML.substring(1))<=target) {console.log("bear ".concat(target))}
 }
 
-var checkPriceGreat=function(mi,target) {
-	if (Number.parseFloat(mi[].innerHTML.substring(1))>=target) {console.log("bull ".concat(target))}
+var checkPriceGreat=function(ds,target) {
+	if (Number.parseFloat(ds[5].innerHTML.substring(1))>=target) {console.log("bull ".concat(target))}
 }
 
