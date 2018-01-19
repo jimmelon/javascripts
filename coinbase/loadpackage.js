@@ -38,14 +38,127 @@ var getPrice=function(ds){
 
 var threeRatio=function(){
 	var price = getPrice(ds);
-	return [price.BCH.price.BTCRATIO, price.ETH.price.BTCRATIO,price.LTC.price.BTCRATIO];
+	return [1,price.BCH.price.BTC, price.ETH.price.BTC,price.LTC.price.BTC];
 }
 
 var threePressure=function(){
 	var price = getPrice(ds);
-	return [price.BCH.price.pressure, price.ETH.price.pressure,price.LTC.price.pressure];
+	return [0,price.BCH.price.pressure, price.ETH.price.pressure,price.LTC.price.pressure];
 }
 
+var threeUSD=function(){
+	var price = getPrice(ds);
+	return [price.BTC.price.USD, price.BCH.price.USD, price.ETH.price.USD,price.LTC.price.USD];
+}
+
+var snapStamp,priviousRatio,PriviousUSD,previousPressure;
+var currentStamp,currentRatio,currentUSD,currentPressure;
+var SnapshotPrice=function()
+{
+	snapStamp=Date.now();
+	priviousRatio=threeRatio();
+	PriviousUSD=threeUSD();
+	previousPressure=threePressure();
+}
+var currentPrice=function()
+{
+	currentStamp=Date.now();
+	currentRatio=threeRatio();
+	currentUSD=threeUSD();
+	currentPressure=threePressure();
+}
+var previous={"time":snapStamp,"ratio":priviousRatio,"USD":PriviousUSD,"P":previousPressure};previous;
+currentPrice();var current={"ctime":currentStamp,"cratio":currentRatio,"cUSD":currentUSD,"cP":currentPressure};current;
+var checkProfile=function(index){
+	
+	var currencyType;
+	switch(index) {
+    case 1:
+		currencyType="BCH";
+        console.log("check ---------------------------------> BCH");
+        break;
+    case 2:
+		currencyType="ETH";
+        console.log("check  ---------------------------------> ETH");
+        break;
+    case 3:
+		currencyType="LTC";
+        console.log("check  ---------------------------------> LTC");
+		break;
+	default:
+		console.log("wrong parameter");
+	}
+
+	var startAmount=1000, endAmount, deltaUSD=0.01, deltaRatio=0.0001;
+	currentPrice();
+	
+	//todo check time being
+	
+	//todo post your deal with +0.01 or -0.001
+	
+	//USD->BTC->ETH/BTC->ETH->USD
+	if(previousPressure[index] > 0)
+	{
+		console.log("try buy BTC--->");
+		//     <<>
+		if(currentUSD[0]<PriviousUSD[0]){console.log("success buy BTC");}else if(currentUSD[0]==PriviousUSD[0]){console.log("wait BTC lower")}else{console.log({cur:currentUSD[0],o:">",pre:PriviousUSD[0]});}//buy
+		if(currentRatio[index]<priviousRatio[index]){console.log("success buy Ratio");}else if(currentRatio[index]==priviousRatio[index]){console.log("wait ratio lower")}else{console.log({cur:currentRatio[index],o:">",pre:priviousRatio[index]});}//buy
+		if(currentUSD[index]>PriviousUSD[index]){console.log("success sell index");}else if(currentUSD[index]==PriviousUSD[index]){console.log("wait "+currencyType+" higher")}else{console.log({cur:currentUSD[index],o:"<",pre:PriviousUSD[index]});}//sell
+	
+		if(currentUSD[0]<PriviousUSD[0]){//buy BTC
+			console.log("1");
+			if(currentRatio[index]<priviousRatio[index]){//buy eth --->convert to ETH
+				console.log("2");
+				if(currentUSD[index]>PriviousUSD[index]){//sell ETH index
+					console.log("3");
+					checkPossible(startAmount,index,true);
+				}
+			}
+		}
+	}else{//USD->ETH>ETH/BTC->BTC->USD
+		console.log("try sell --->BTC");
+
+		if(currentUSD[index]<PriviousUSD[index]){console.log("success buy index");}else if(currentUSD[index]==PriviousUSD[index]){console.log("wait "+currencyType+" lower")}else{console.log({cur:currentUSD[index],o:">",pre:PriviousUSD[index]});}//buy
+		if(currentRatio[index]>priviousRatio[index]){console.log("success sell Ratio");}else if(currentRatio[index]==priviousRatio[index]){console.log("wait ratio Higher")}else{console.log({cur:currentRatio[index],o:"<",pre:priviousRatio[index]});}//sell
+		if(currentUSD[0]>PriviousUSD[0]){console.log("success sell BTC");}else if(currentUSD[0]==PriviousUSD[0]){console.log("wait BTC Higher")}else{console.log({cur:currentUSD[0],o:"<",pre:PriviousUSD[0]});}//sell
+		
+		if(currentUSD[0]<PriviousUSD[0]){
+			console.log("1");
+			if(currentRatio[index]>priviousRatio[index]){
+				console.log("2");
+				if(currentUSD[index]>PriviousUSD[index]){
+					console.log("3");
+					checkPossible(startAmount,index,false);
+				}
+			}
+		}
+
+	}
+	
+	
+	//USD->ETH>ETH/BTC->BTC->USD
+	
+}
+
+var  checkPossible=function(startAmount,index,direction){
+	var endAmount=0;
+	if(direction)
+	{
+		//USD->BTC->ETH/BTC->ETH->USD
+		endAmount = (((startAmount/currentUSD[0])*currentRatio[index])*currentUSD[index])
+	}else{
+		//USD->ETH>ETH/BTC->BTC->USD
+		endAmount = (((startAmount/currentUSD[index])/currentRatio[index])*currentUSD[0])
+	}
+	
+	console.log([startAmount, endAmount]);
+	
+}
+
+
+
+
+//old
 var b2blong=function(ds) {
 	console.log([new Date().getSeconds(),"ETH=".concat(ds[3].innerHTML.substring(1)),
 	"BTC=".concat(ds[0].innerHTML.substring(1)),
