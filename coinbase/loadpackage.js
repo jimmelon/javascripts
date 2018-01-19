@@ -1,6 +1,8 @@
 var ds=$$(".ProductSelectionItem_price_sn2Ut");
 var lableContainner = $(".MarketInfo_market-info_3lkUj");
 var productSelectContainner = $$("li.ProductSelection_choose-product_3ZOjB > ul > li");
+var Coins = Object.freeze({"BTC":1, "BCH":2, "ETH":3,"LTC":4});
+var Currency= Object.freeze({"USD":1, "BTC":2});
 
 var selectcointype=function(coin,type){	
 	$("li.ProductSelection_choose-product_3ZOjB > ul > li:nth-child("+coin+") > ul > li:nth-child("+type+") > a").click();
@@ -9,12 +11,12 @@ var selectcointype=function(coin,type){
 	return $("li.ProductSelection_choose-product_3ZOjB > ul > li:nth-child("+coin+") > ul > li:nth-child("+type+") > a");
 }
 
-var buysellcoin=function(coin,type,amount, margin= 0.01)
+var buysellcoin=function(coin,type,amount, margin= 0.01,real=false)
 {
 	selectcointype(coin,type);
 	
 	var price=_get_current_price(coin,type);
-	if(type==2){
+	if(type==Currency.BTC){
 		margin = 0.00001;	
 	}
 	
@@ -41,7 +43,7 @@ var buysellcoin=function(coin,type,amount, margin= 0.01)
 		console.log(price);
 	}
 	
-	
+	if(real)
 	$("form > button").click();
 
 }
@@ -50,45 +52,45 @@ function _get_current_price(coin,type){
 	var price,prices = getPrice(ds);
 	
 	switch(coin) {
-    case 1:
+    case Coins.BTC:
 		switch(type) {
-			case 1:
+			case Currency.USD:
 				price=prices.BTC.price.USD;
 				break;
 			default:
 				price=0;
 			}
         break;
-    case 2:
+    case Coins.BCH:
 		switch(type) {
-			case 1:
+			case Currency.USD:
 				price=prices.BCH.price.USD;
 				break;
-			case 2:
+			case Currency.BTC:
 				price=prices.BCH.price.BTC;
 				break;
 			default:
 				price=0;
 			}
         break;
-    case 3:
+    case Coins.ETH:
 		switch(type) {
-			case 1:
+			case Currency.USD:
 				price=prices.ETH.price.USD;
 				break;
-			case 2:
+			case Currency.BTC:
 				price=prices.ETH.price.BTC;
 				break;
 			default:
 				price=0;
 			}
 		break;
-	case 4:
+	case Coins.LTC:
 		switch(type) {
-			case 1:
+			case Currency.USD:
 				price=prices.LTC.price.USD;
 				break;
-			case 2:
+			case Currency.BTC:
 				price=prices.LTC.price.BTC;
 				break;
 			default:
@@ -136,6 +138,31 @@ var getPrice=function(ds){
 	return Coin;
 }
 
+var totalasset=function()
+{
+	
+	var prices = getPrice(ds);
+	$("#page_content > div > div.Navbar_nav-wrapper_3F-kP > div > div.AccountPanel_account-panel_2u2aK > nav > div > ul > li:nth-child(2) > a").click();
+
+	var usd=$("#page_content > div > div.Accounts_accounts_MxWwa > aside > div > div > ul > li:nth-child(1) > a > div > h5:nth-child(2) > span:nth-child(3)").innerHTML;
+	var eth=$("#page_content > div > div.Accounts_accounts_MxWwa > aside > div > div > ul > li:nth-child(2) > a > div > h5:nth-child(2) > span:nth-child(3)").innerHTML;
+	var bch=$("#page_content > div > div.Accounts_accounts_MxWwa > aside > div > div > ul > li:nth-child(3) > a > div > h5:nth-child(2) > span:nth-child(3)").innerHTML;
+	var ltc=$("#page_content > div > div.Accounts_accounts_MxWwa > aside > div > div > ul > li:nth-child(4) > a > div > h5:nth-child(2) > span:nth-child(3)").innerHTML;
+	var btc=$("#page_content > div > div.Accounts_accounts_MxWwa > aside > div > div > ul > li:nth-child(5) > a > div > h5:nth-child(2) > span:nth-child(3)").innerHTML;
+	console.log([usd,btc,bch,eth,ltc]);
+	console.log([1,prices.BTC.price.USD,prices.BCH.price.USD,prices.ETH.price.USD,prices.LTC.price.USD]);
+	
+	var usdusd = 1 * usd;
+	var ethusd = eth * prices.ETH.price.USD;
+	var bchusd = bch * prices.BCH.price.USD;
+	var ltcusd = ltc * prices.LTC.price.USD;
+	var btcusd = btc * prices.BTC.price.USD;
+	console.log([usdusd,ethusd,bchusd,ltcusd,btcusd]);
+	
+	console.log(parseFloat(usdusd)+parseFloat(ethusd)+parseFloat(bchusd)+parseFloat(ltcusd)+parseFloat(btcusd));
+	
+	
+}
 var threeRatio=function(){
 	var price = getPrice(ds);
 	return [1,price.BCH.price.BTC, price.ETH.price.BTC,price.LTC.price.BTC];
