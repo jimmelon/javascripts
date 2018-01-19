@@ -1,0 +1,1 @@
+$("#page_content > div > div.Navbar_nav-wrapper_3F-kP > div > div.Navbar_info-number-wrapper_VnPY0 > ul > li.ProductSelection_choose-product_3ZOjB > ul > li:nth-child(1) > ul > li:nth-child(1)");

@@ -1,6 +1,106 @@
 var ds=$$(".ProductSelectionItem_price_sn2Ut");
 var lableContainner = $(".MarketInfo_market-info_3lkUj");
+var productSelectContainner = $$("li.ProductSelection_choose-product_3ZOjB > ul > li");
 
+var selectcointype=function(coin,type){	
+	$("li.ProductSelection_choose-product_3ZOjB > ul > li:nth-child("+coin+") > ul > li:nth-child("+type+") > a").click();
+	$("li.ProductSelection_choose-product_3ZOjB").setAttribute("class", "ProductSelection_choose-product_3ZOjB");//remove popup
+	$("form > ul.OrderForm_trade-type_2QyK4 > li:nth-child(2)").click();
+	return $("li.ProductSelection_choose-product_3ZOjB > ul > li:nth-child("+coin+") > ul > li:nth-child("+type+") > a");
+}
+
+var buysellcoin=function(coin,type,amount, margin= 0.01)
+{
+	selectcointype(coin,type);
+	
+	var price=_get_current_price(coin,type);
+	if(type==2){
+		margin = 0.00001;	
+	}
+	
+	if(amount > 0)
+	{
+		price=parseFloat(price)- parseFloat(margin);
+		//$("form > ul.OrderForm_toggle_120Ka > li.OrderForm_toggle-tab_bZZnC.OrderForm_buy_38n5g").click()
+	}else{//for sell
+		$("form > ul.OrderForm_toggle_120Ka > li.OrderForm_toggle-tab_bZZnC.OrderForm_sell_3vYRQ").click();
+		amount=Math.abs(amount);
+		price=parseFloat(price)+ parseFloat(margin);
+	}
+	
+	$('form > div.limit-order > div > div.OrderForm_input-box_XkGmi > input[name="amount"]').value=amount;
+	//make sure post only
+	//$("form > div.limit-order > div:nth-child(3) > div.OrderForm_toggle_120Ka.OrderForm_small_3d6oD > div.OrderForm_toggle-tab_bZZnC.OrderForm_active_Di-9p").click();
+	$("form > div.limit-order > div:nth-child(3) > div.OrderForm_toggle_120Ka.OrderForm_small_3d6oD > div:nth-child(1)").click();
+	//$("form > div.limit-order > div:nth-child(3) > div.OrderForm_toggle_120Ka.OrderForm_small_3d6oD > div:nth-child(2)").click();
+	
+	if(price>0)
+	{	price = (parseFloat( price).toPrecision(6));
+		$('form > div.limit-order > div:nth-child(2) > div.OrderForm_input-box_XkGmi > input[type="number"]').value=price;	
+	}else{
+		console.log(price);
+	}
+	
+	
+	$("form > button").click();
+
+}
+
+function _get_current_price(coin,type){
+	var price,prices = getPrice(ds);
+	
+	switch(coin) {
+    case 1:
+		switch(type) {
+			case 1:
+				price=prices.BTC.price.USD;
+				break;
+			default:
+				price=0;
+			}
+        break;
+    case 2:
+		switch(type) {
+			case 1:
+				price=prices.BCH.price.USD;
+				break;
+			case 2:
+				price=prices.BCH.price.BTC;
+				break;
+			default:
+				price=0;
+			}
+        break;
+    case 3:
+		switch(type) {
+			case 1:
+				price=prices.ETH.price.USD;
+				break;
+			case 2:
+				price=prices.ETH.price.BTC;
+				break;
+			default:
+				price=0;
+			}
+		break;
+	case 4:
+		switch(type) {
+			case 1:
+				price=prices.LTC.price.USD;
+				break;
+			case 2:
+				price=prices.LTC.price.BTC;
+				break;
+			default:
+				price=0;
+			}
+		break;
+	default:
+		price=0;
+	}
+	return price;
+	
+}
 
 var getPrice=function(ds){
 	
@@ -59,6 +159,10 @@ var SnapshotPrice=function()
 	priviousRatio=threeRatio();
 	PriviousUSD=threeUSD();
 	previousPressure=threePressure();
+	
+	console.log(PriviousUSD);
+	console.log(priviousRatio);
+	console.log(previousPressure);
 }
 var currentPrice=function()
 {
