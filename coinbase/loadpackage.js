@@ -142,13 +142,17 @@ var checkProfile=function(index){
 
 var  checkPossible=function(startAmount,index,direction){
 	var endAmount=0;
+	console.log({ coin:currentUSD[index],ratio:currentRatio[index],btc:currentUSD[0] });
 	if(direction)
 	{
-		//USD->BTC->ETH/BTC->ETH->USD
-		endAmount = (((startAmount/currentUSD[0])*currentRatio[index])*currentUSD[index])
+		console.log("USD->ETH>ETH/BTC->BTC->USD");
+		endAmount = (((startAmount/currentUSD[index])*currentRatio[index])*currentUSD[0]);
+		
+		
 	}else{
-		//USD->ETH>ETH/BTC->BTC->USD
-		endAmount = (((startAmount/currentUSD[index])/currentRatio[index])*currentUSD[0])
+		console.log("USD->BTC->ETH/BTC->ETH->USD");
+		endAmount = (((startAmount/currentUSD[0])/currentRatio[index])*currentUSD[index]);
+		
 	}
 	
 	console.log([startAmount, endAmount]);
