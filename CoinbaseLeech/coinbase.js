@@ -354,7 +354,7 @@ var htmlupdates=function() {
 	var ds=$$(".ProductSelectionItem_price_sn2Ut");
 	var prices = getPrice();
 	
-	console.log(prices);
+	console.log([prices.BTC.USD,prices.BCH.USD,prices.ETH.USD,prices.LTC.USD]);
 	if (typeof prices === "undefined") return;
 	
 	currentPrice(prices);
