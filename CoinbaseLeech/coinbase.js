@@ -1,8 +1,18 @@
-var ds=$$(".ProductSelectionItem_price_sn2Ut");
-var lableContainner = $(".MarketInfo_market-info_3lkUj");
-var productSelectContainner = $$("li.ProductSelection_choose-product_3ZOjB > ul > li");
+function $(s){return document.querySelector(s);}
+function $$(s){return document.querySelectorAll(s);}
+
 var Coins = Object.freeze({"BTC":1, "BCH":2, "ETH":3,"LTC":4});
 var Currency= Object.freeze({"USD":1, "BTC":2});
+
+var previous={"time":snapStamp,"ratio":priviousRatio,"USD":PriviousUSD,"P":previousPressure};previous;
+var current={"ctime":currentStamp,"cratio":currentRatio,"cUSD":currentUSD,"cP":currentPressure};current;
+
+function test(){
+
+	alert("hello world");
+}
+
+//test();
 
 var selectcointype=function(coin,type){	
 	$("li.ProductSelection_choose-product_3ZOjB > ul > li:nth-child("+coin+") > ul > li:nth-child("+type+") > a").click();
@@ -55,7 +65,7 @@ function _get_current_price(coin,type){
     case Coins.BTC:
 		switch(type) {
 			case Currency.USD:
-				price=prices.BTC.price.USD;
+				price=prices.BTC.USD;
 				break;
 			default:
 				price=0;
@@ -64,10 +74,10 @@ function _get_current_price(coin,type){
     case Coins.BCH:
 		switch(type) {
 			case Currency.USD:
-				price=prices.BCH.price.USD;
+				price=prices.BCH.USD;
 				break;
 			case Currency.BTC:
-				price=prices.BCH.price.BTC;
+				price=prices.BCH.BTC;
 				break;
 			default:
 				price=0;
@@ -76,10 +86,10 @@ function _get_current_price(coin,type){
     case Coins.ETH:
 		switch(type) {
 			case Currency.USD:
-				price=prices.ETH.price.USD;
+				price=prices.ETH.USD;
 				break;
 			case Currency.BTC:
-				price=prices.ETH.price.BTC;
+				price=prices.ETH.BTC;
 				break;
 			default:
 				price=0;
@@ -88,10 +98,10 @@ function _get_current_price(coin,type){
 	case Coins.LTC:
 		switch(type) {
 			case Currency.USD:
-				price=prices.LTC.price.USD;
+				price=prices.LTC.USD;
 				break;
 			case Currency.BTC:
-				price=prices.LTC.price.BTC;
+				price=prices.LTC.BTC;
 				break;
 			default:
 				price=0;
@@ -104,38 +114,40 @@ function _get_current_price(coin,type){
 	
 }
 
-var getPrice=function(ds){
-	
-	var Coin={
-	BTC:{
-		price:{ USD:ds[0].innerHTML.substring(1),
-				BTC:1
-				}
-	},
-	BCH:{
-		price:{USD:ds[3].innerHTML.substring(1),
-				BTC:ds[4].innerHTML.substring(1),
-				BTCRATIO: ds[3].innerHTML.substring(1)/ds[0].innerHTML.substring(1),
-				pressure: (ds[3].innerHTML.substring(1)/ds[0].innerHTML.substring(1)-ds[4].innerHTML.substring(1))*10000
-		}
-	},
-	ETH:{
-		price:{	USD:ds[5].innerHTML.substring(1),
-				BTC:ds[6].innerHTML.substring(1),
-				BTCRATIO: ds[5].innerHTML.substring(1)/ds[0].innerHTML.substring(1),
-				pressure: (ds[5].innerHTML.substring(1)/ds[0].innerHTML.substring(1)-ds[6].innerHTML.substring(1))*10000
-		}
-	},
-	LTC:{
-		price:{	USD:ds[8].innerHTML.substring(1),
-				BTC:ds[9].innerHTML.substring(1),
-				BTCRATIO: ds[8].innerHTML.substring(1)/ds[0].innerHTML.substring(1),
-				pressure: (ds[8].innerHTML.substring(1)/ds[0].innerHTML.substring(1)-ds[9].innerHTML.substring(1))*10000
-		}
-	},
-	EOS:{}
-}
-	return Coin;
+var getPrice=function(){
+	ds=$$(".ProductSelectionItem_price_sn2Ut");
+
+	if (typeof ds[0] === "undefined") return;
+
+	return {
+		BTC:{
+				USD:ds[0].innerHTML.substring(1),
+				BTC:1		
+		},
+		BCH:{
+			USD:ds[3].innerHTML.substring(1),
+			BTC:ds[4].innerHTML.substring(1),
+			BTCRATIO: ds[3].innerHTML.substring(1)/ds[0].innerHTML.substring(1),
+			pressure: (ds[3].innerHTML.substring(1)/ds[0].innerHTML.substring(1)-ds[4].innerHTML.substring(1))*10000
+			
+		},
+		ETH:{
+			USD:ds[6].innerHTML.substring(1),
+			BTC:ds[7].innerHTML.substring(1),
+			BTCRATIO: ds[6].innerHTML.substring(1)/ds[0].innerHTML.substring(1),
+			pressure: (ds[6].innerHTML.substring(1)/ds[0].innerHTML.substring(1)-ds[7].innerHTML.substring(1))*10000
+			
+		},
+		LTC:{
+			USD:ds[9].innerHTML.substring(1),
+			BTC:ds[10].innerHTML.substring(1),
+			BTCRATIO: ds[9].innerHTML.substring(1)/ds[0].innerHTML.substring(1),
+			pressure: (ds[9].innerHTML.substring(1)/ds[0].innerHTML.substring(1)-ds[10].innerHTML.substring(1))*10000
+			
+		},
+		EOS:{}
+	}
+
 }
 
 var totalasset=function()
@@ -150,56 +162,53 @@ var totalasset=function()
 	var ltc=$("#page_content > div > div.Accounts_accounts_MxWwa > aside > div > div > ul > li:nth-child(4) > a > div > h5:nth-child(2) > span:nth-child(3)").innerHTML;
 	var btc=$("#page_content > div > div.Accounts_accounts_MxWwa > aside > div > div > ul > li:nth-child(5) > a > div > h5:nth-child(2) > span:nth-child(3)").innerHTML;
 	console.log([usd,btc,bch,eth,ltc]);
-	console.log([1,prices.BTC.price.USD,prices.BCH.price.USD,prices.ETH.price.USD,prices.LTC.price.USD]);
+	console.log([1,prices.BTC.USD,prices.BCH.USD,prices.ETH.USD,prices.LTC.USD]);
 	
 	var usdusd = 1 * usd;
-	var ethusd = eth * prices.ETH.price.USD;
-	var bchusd = bch * prices.BCH.price.USD;
-	var ltcusd = ltc * prices.LTC.price.USD;
-	var btcusd = btc * prices.BTC.price.USD;
+	var ethusd = eth * prices.ETH.USD;
+	var bchusd = bch * prices.BCH.USD;
+	var ltcusd = ltc * prices.LTC.USD;
+	var btcusd = btc * prices.BTC.USD;
 	console.log([usdusd,ethusd,bchusd,ltcusd,btcusd]);
 	
 	console.log(parseFloat(usdusd)+parseFloat(ethusd)+parseFloat(bchusd)+parseFloat(ltcusd)+parseFloat(btcusd));
 	
 	
 }
-var threeRatio=function(){
-	var price = getPrice(ds);
-	return [1,price.BCH.price.BTC, price.ETH.price.BTC,price.LTC.price.BTC];
+var threeRatio=function(price){
+	return [1,price.BCH.BTC, price.ETH.BTC,price.LTC.BTC];
 }
 
-var threePressure=function(){
-	var price = getPrice(ds);
-	return [0,price.BCH.price.pressure, price.ETH.price.pressure,price.LTC.price.pressure];
+var threePressure=function(price){
+	return [0,price.BCH.pressure, price.ETH.pressure,price.LTC.pressure];
 }
 
-var threeUSD=function(){
-	var price = getPrice(ds);
-	return [price.BTC.price.USD, price.BCH.price.USD, price.ETH.price.USD,price.LTC.price.USD];
+var threeUSD=function(price){
+	return [price.BTC.USD, price.BCH.USD, price.ETH.USD,price.LTC.USD];
+}
+var threeBTCRATIO=function(price){
+	return [1, price.BCH.BTCRATIO, price.ETH.BTCRATIO,price.LTC.BTCRATIO];
 }
 
-var snapStamp,priviousRatio,PriviousUSD,previousPressure;
-var currentStamp,currentRatio,currentUSD,currentPressure;
-var SnapshotPrice=function()
+var snapStamp,priviousRatio,PriviousUSD,previousPressure, previousBTCRATIO;
+var currentStamp,currentRatio,currentUSD,currentPressure, currentBTCRATIO;
+var SnapshotPrice=function(price)
 {
 	snapStamp=Date.now();
-	priviousRatio=threeRatio();
-	PriviousUSD=threeUSD();
-	previousPressure=threePressure();
-	
-	console.log(PriviousUSD);
-	console.log(priviousRatio);
-	console.log(previousPressure);
+	priviousRatio=threeRatio(price);
+	PriviousUSD=threeUSD(price);
+	previousPressure=threePressure(price);
+	previousBTCRATIO=threeBTCRATIO(price);
+
 }
-var currentPrice=function()
+var currentPrice=function(price)
 {
 	currentStamp=Date.now();
-	currentRatio=threeRatio();
-	currentUSD=threeUSD();
-	currentPressure=threePressure();
+	currentRatio=threeRatio(price);
+	currentUSD=threeUSD(price);
+	currentPressure=threePressure(price);
+	currentBTCRATIO=threeBTCRATIO(price);
 }
-var previous={"time":snapStamp,"ratio":priviousRatio,"USD":PriviousUSD,"P":previousPressure};previous;
-currentPrice();var current={"ctime":currentStamp,"cratio":currentRatio,"cUSD":currentUSD,"cP":currentPressure};current;
 var checkProfile=function(index){
 	
 	var currencyType;
@@ -221,7 +230,7 @@ var checkProfile=function(index){
 	}
 
 	var startAmount=1000, endAmount, deltaUSD=0.01, deltaRatio=0.0001;
-	currentPrice();
+	//currentPrice();
 	
 	//todo check time being
 	
@@ -276,20 +285,15 @@ var  checkPossible=function(startAmount,index,direction){
 	console.log({ coin:currentUSD[index],ratio:currentRatio[index],btc:currentUSD[0] });
 	if(direction)
 	{
-		console.log("USD->BTC->ETH/BTC->ETH->USD");
-		endAmount = (((startAmount/currentUSD[0])/currentRatio[index])*currentUSD[index]);
-	
-	}else{
 		console.log("USD->ETH>ETH/BTC->BTC->USD");
 		endAmount = (((startAmount/currentUSD[index])*currentRatio[index])*currentUSD[0]);
-	}
-	
-	
-	console.log("USD->ETH>ETH/BTC->BTC->USD");
-		endAmount = (((startAmount/currentUSD[index])*currentRatio[index])*currentUSD[0]);
-	
-	console.log("USD->BTC->ETH/BTC->ETH->USD");
+		
+		
+	}else{
+		console.log("USD->BTC->ETH/BTC->ETH->USD");
 		endAmount = (((startAmount/currentUSD[0])/currentRatio[index])*currentUSD[index]);
+		
+	}
 	
 	console.log([startAmount, endAmount]);
 	
@@ -298,32 +302,6 @@ var  checkPossible=function(startAmount,index,direction){
 
 
 
-//old
-var b2blong=function(ds) {
-	console.log([new Date().getSeconds(),"ETH=".concat(ds[3].innerHTML.substring(1)),
-	"BTC=".concat(ds[0].innerHTML.substring(1)),
-	"ratio=".concat(Number.parseFloat(ds[3].innerHTML.substring(1)/ds[0].innerHTML.substring(1)).toPrecision(4)),
-	Number.parseFloat(ds[4].innerHTML.substring(1)).toPrecision(4),
-	Number.parseFloat((ds[3].innerHTML.substring(1)/ds[0].innerHTML.substring(1) - ds[4].innerHTML.substring(1))*10000).toPrecision(4)]);
-};
-
-
-var e2blong=function(ds) {
-	console.log([new Date().getSeconds(),"ETH=".concat(ds[5].innerHTML.substring(1)),
-	"BTC=".concat(ds[0].innerHTML.substring(1)),
-	"ratio=".concat(Number.parseFloat(ds[5].innerHTML.substring(1)/ds[0].innerHTML.substring(1)).toPrecision(4)),
-	Number.parseFloat(ds[6].innerHTML.substring(1)).toPrecision(4),
-	Number.parseFloat((ds[5].innerHTML.substring(1)/ds[0].innerHTML.substring(1) - ds[6].innerHTML.substring(1))*10000).toPrecision(4)]);
-};
-
-
-var e2b=function(ds) {
-	console.log([new Date().getSeconds(),ds[5].innerHTML.substring(1),
-	ds[0].innerHTML.substring(1),
-	Number.parseFloat(ds[5].innerHTML.substring(1)/ds[0].innerHTML.substring(1)).toPrecision(4),
-	Number.parseFloat(ds[6].innerHTML.substring(1)).toPrecision(4),
-	Number.parseFloat((ds[5].innerHTML.substring(1)/ds[0].innerHTML.substring(1) - ds[6].innerHTML.substring(1))*10000).toPrecision(4)]);
-};
 
 function createLabel(label, description)
 {
@@ -343,6 +321,7 @@ function createLabel(label, description)
 			
 			var sp2 = document.createElement("span");
 			sp2.setAttribute('class', "MarketInfo_market-descr_2lp4B");
+			//sp1_1.setAttribute('id', description+"_usd");
 			var node = document.createTextNode(description);
 			sp2.appendChild(node);
 		h4.appendChild(sp1);
@@ -354,6 +333,7 @@ function createLabel(label, description)
 
 var htmlupdate=function(ds, description) {
 	var ele = document.getElementById(description+"_id");
+	ds=$$(".ProductSelectionItem_price_sn2Ut");
 	ele.innerHTML =Number.parseFloat((ds[5].innerHTML.substring(1)/ds[0].innerHTML.substring(1) - ds[6].innerHTML.substring(1))*10000).toPrecision(4);
 };
 
@@ -367,3 +347,48 @@ var checkPriceGreat=function(ds,target) {
 	if (Number.parseFloat(ds[5].innerHTML.substring(1))>=target) {console.log("bull ".concat(target))}
 }
 
+///-------------------------
+var checkCount=0;
+///--------------------------
+var htmlupdates=function() {
+	var ds=$$(".ProductSelectionItem_price_sn2Ut");
+	var prices = getPrice();
+	
+	console.log(prices);
+	if (typeof prices === "undefined") return;
+	
+	currentPrice(prices);
+	document.getElementById("bch_ratio_id").innerHTML = Number.parseFloat((prices.BCH.USD/prices.BTC.USD - prices.BCH.BTC)*10000).toPrecision(4);
+	document.getElementById("eth_ratio_id").innerHTML = Number.parseFloat((prices.ETH.BTCRATIO - prices.ETH.BTC)*10000).toPrecision(4);
+	document.getElementById("ltc_ratio_id").innerHTML = Number.parseFloat(prices.LTC.pressure).toPrecision(4);
+
+	//if (typeof ds === "undefined") return;
+	
+	if(checkCount%3 ==0) {
+
+		//if(checkCount !=0)checkProfile(2);
+		SnapshotPrice(prices);
+		checkCount=0;
+	}
+
+	checkCount++;
+
+};
+
+var ds=$$(".ProductSelectionItem_price_sn2Ut");
+var lableContainner = $(".MarketInfo_market-info_3lkUj");
+
+
+var li2 = createLabel(1, "bch_ratio");
+lableContainner.appendChild(li2);
+
+var li3 = createLabel(2, "eth_ratio");
+lableContainner.appendChild(li3);
+
+var li4 = createLabel(3, "ltc_ratio");
+lableContainner.appendChild(li4);
+
+
+//htmlupdates.bind(null,ds)
+
+var testId = setInterval(htmlupdates, 1000);

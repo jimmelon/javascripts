@@ -1,0 +1,7 @@
+{
+  "manifest_version": 2,
+  "name": "Gdax Helper",
+  "version": "0.1","background": {"scripts": ["background.js"]},
+  "content_scripts": [{"matches": ["https://www.gdax.com/*"],"js": ["coinbase.js","content.js"]}],
+  "browser_action": {"default_icon": "coinbase.png"}
+}
